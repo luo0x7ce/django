@@ -1,0 +1,118 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}归还图书{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="page-header">
+        <div>
+            <h1><i class="bi bi-arrow-up-circle"></i> 归还图书</h1>
+            <p class="text-muted mb-0">处理图书归还事宜</p>
+        </div>
+        <div>
+            <a href="{% url 'bookstore:borrow_record_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> 返回借阅记录
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-list-task"></i> 待归还记录
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>读者姓名</th>
+                                    <th>书籍</th>
+                                    <th>借书日期</th>
+                                    <th>应还日期</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in records %}
+                                <tr>
+                                    <td>{{ record.id }}</td>
+                                    <td>{{ record.name }}</td>
+                                    <td>{{ record.book.title }}</td>
+                                    <td>{{ record.borrow_date|date:"Y-m-d" }}</td>
+                                    <td>{{ record.due_date }}</td>
+                                    <td>
+                                        {% if record.returned %}
+                                            <span class="badge bg-success">已归还</span>
+                                        {% else %}
+                                            <span class="badge bg-primary">借阅中</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not record.returned %}
+                                        <a href="{% url 'bookstore:return_book' record.id %}"
+                                           class="btn btn-sm btn-success">
+                                            <i class="bi bi-check-circle"></i> 归还
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">暂无待归还记录</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-info-circle"></i> 归还须知
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-clock text-primary"></i>
+                            <strong>借阅期限:</strong> 30天
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-cash-text text-warning"></i>
+                            <strong>逾期罚款:</strong> 0.5元/天
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-stack text-danger"></i>
+                            <strong>续借次数:</strong> 2次
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-shield-check text-success"></i>
+                            <strong>损坏赔偿:</strong> 照价赔偿
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="text-center">
+                        <h5>今日统计</h5>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h4">{{ total_books }}</div>
+                                <small class="text-muted">总藏书</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h4">{{ overdue_count }}</div>
+                                <small class="text-muted">逾期未还</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

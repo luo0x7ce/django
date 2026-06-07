@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍搜索</title>
+    <style>
+        :root {
+            --blue-color: #007bff;
+            --light-gray-color: #f4f4f4;
+            --table-header-bg: #e8f4ff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray-color);
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--blue-color);
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px; /* 减小内边距 */
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .active-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #fff;
+            background-color: var(--blue-color);
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 0; /* 去掉外边距 */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: transparent;
+            color: var(--blue-color);
+        }
+
+        td a {
+            text-decoration: none;
+            color: var(--blue-color);
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .text-limit {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        /* 其他样式保持不变 */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>书籍搜索</h1>
+       <div class="search-container">
+            <a href="/bookstore/first_page" class="active-link">首页</a>
+            <!-- 搜索表单 -->
+            {% include "bookstore/search_form.html" %}
+        </div>
+        <div>
+            {% if query %}
+            <a>搜索结果：找到 {{ books.count }} 本相关书籍。</a> {% else %} <a>全量书籍列表，共 {{ all_books.count }} 本。</a> {% endif %}
+        </div>
+        {% if books %}
+              <table>
+        <tr>
+            <th>ID</th>
+            <th>书名</th>
+            <th>国际书籍编号</th>
+            <th>出版社</th>
+            <th>价格</th>
+            <th>市场价格</th>
+            <th>图书数量</th>
+            <th>图书位置</th>
+            <th>作者</th>
+            <th>操作</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.id }}</td>
+            <td>{{ book.title }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.pub}}</td>
+            <td>{{ book.price}}</td>
+            <td>{{ book.market_price}}</td>
+                  <td>{{ book.shu_nub }}</td>
+                  <td>{{ book.shu_jia }}</td>
+                  <td>{{ book.author11_name }}</td>
+            <td>
+                     <a href="/bookstore/borrow_book" class="text-limit">借阅</a>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+        {% else %}
+        <p class="no-results">没有找到书籍匹配 "{{ request.GET.q|default:'' }}"。</p>
+        {% endif %}
+    </div>
+</body>
+</html>

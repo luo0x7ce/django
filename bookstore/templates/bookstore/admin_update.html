@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>更新书籍</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+        input[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        .disabled-input {
+            opacity: 0.5;
+            background-color: #eee;
+        }
+        .required {
+            color: red;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form action="/bookstore/update_admin1_view/{{ user_id }}" method="post">
+        <fieldset>
+            <legend>更新管理员信息</legend>
+            <p>
+                 <span class="required">*</span>
+                <label for="username">用户名:</label>
+                <input type="text" id="username" name="username" class="disabled-input" value="{{ user.username  }}" >
+            </p>
+            <p>
+                 <span class="required">*</span>
+                <label for="email">电子邮件:</label>
+                <input type="text" id="email"  name="email" class="disabled-input" value="{{ user.email }}" >
+            </p>
+             <p>
+                <label for="is_superuser">修改为超级管理员True/False:</label>
+                <input type="text" id="is_superuser"  name="is_superuser"  value="{{ user.is_superuser }}" >
+            </p>
+            <p>
+                <input type="submit" value="更新">
+            </p>
+        </fieldset>
+    </form>
+</body>
+</html>

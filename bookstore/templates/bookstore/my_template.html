@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Information Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .row-span {
+            padding: 0;
+        }
+        .row-span td {
+            padding: 8px;
+            border: none; /* 去掉内部单元格的边框 */
+        }
+    </style>
+</head>
+<h3>个人信息</h3>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Last Login</th>
+                <th>Date Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 假设 users 是一个包含用户数据的数组 -->
+            <tr>
+
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <!-- 将Email和Last Login放在一行显示 -->
+                <td>{{ user.email }}</td>
+                <td>{{ user.last_login }}</td>
+                <td>{{ user.date_joined }}</td>
+            </tr>
+        <a href="/bookstore/first_page">首页</a>
+        </tbody>
+    </table>
+</body>
+</html>

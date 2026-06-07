@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: django-server
+  name: django-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-server
+  template:
+    metadata:
+      labels:
+        app: django-server
+    spec:
+      containers:
+      - name: django
+        image: core.harbor.domain/library/django:v2
+        command: ["/entrypoint.sh"]
+        args: ["python", "manage.py", "runserver", "0.0.0.0:8881"]
+        env:
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: database
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: user-password
+        - name: DB_HOST
+          value: "mysql1.default.svc.cluster.local"          # 根据实际情况调整
+        - name: PORT
+          value: "3306"
+        - name: ALLOWED_HOSTS
+          value: "*"
+        ports:
+        - containerPort: 8881
+          name: http
+        volumeMounts:
+        - name: django-config
+          mountPath: /usr/src/app/bookstore/mysite3/settings.py
+          subPath: settings.py   # 目录，而非文件
+          readOnly: true
+   #     readinessProbe:
+    #      httpGet:
+     #       path: /bookstore/login
+      #      port: 8881
+       #   initialDelaySeconds: 10
+    #      periodSeconds: 5
+     #   livenessProbe:
+      #    httpGet:
+       #     path: /bookstore/login
+        #    port: 8881
+         # initialDelaySeconds: 30
+         # periodSeconds: 15
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: django-config
+        configMap:
+          name: django-settings   # 确保该 ConfigMap 中有 settings.py 这个 key

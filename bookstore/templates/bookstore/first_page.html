@@ -1,0 +1,291 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-house-door text-primary"></i> 首页
+            </h2>
+            <p class="text-muted mb-0">欢迎使用智慧图书馆管理系统</p>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="text-end">
+            <span class="badge bg-primary fs-6 me-2">
+                <i class="bi bi-person"></i> {{ user.username }}
+            </span>
+            {% if user.is_superuser %}
+            <span class="badge bg-danger">
+                <i class="bi bi-shield-check"></i> 管理员
+            </span>
+            {% else %}
+            <span class="badge bg-success">
+                <i class="bi bi-shield"></i> 读者
+            </span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="bi bi-book"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_books|default:0 }}</h3>
+                    <p>馆藏图书</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_readers|default:0 }}</h3>
+                    <p>注册读者</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="bi bi-arrow-down-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ today_borrowed|default:0 }}</h3>
+                    <p>今日借阅</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ overdue_count|default:0 }}</h3>
+                    <p>逾期未还</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快捷操作 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-grid"></i> 快捷操作
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:index' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-search text-primary fs-2"></i>
+                            <h6 class="mt-2 mb-1">图书查询</h6>
+                            <small class="text-muted">搜索和浏览馆藏</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:borrow_book' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-arrow-down-circle text-success fs-2"></i>
+                            <h6 class="mt-2 mb-1">借阅图书</h6>
+                            <small class="text-muted">快速办理借书</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:borrow_record_list' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-list-task text-info fs-2"></i>
+                            <h6 class="mt-2 mb-1">借阅记录</h6>
+                            <small class="text-muted">查看借阅历史</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:reader_profile' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-person-circle text-primary fs-2"></i>
+                            <h6 class="mt-2 mb-1">我的信息</h6>
+                            <small class="text-muted">个人资料管理</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% if user.is_superuser %}
+            <div class="row g-3 mt-2">
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:add_book' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-plus-circle text-success fs-2"></i>
+                            <h6 class="mt-2 mb-1">添加图书</h6>
+                            <small class="text-muted">录入新书</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:overdue_management' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-clock-history text-danger fs-2"></i>
+                            <h6 class="mt-2 mb-1">逾期管理</h6>
+                            <small class="text-muted">处理逾期罚款</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:statistics' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-bar-chart text-warning fs-2"></i>
+                            <h6 class="mt-2 mb-1">统计报表</h6>
+                            <small class="text-muted">数据分析</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'bookstore:admin_info_view' %}" class="text-decoration-none">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-person-badge text-primary fs-2"></i>
+                            <h6 class="mt-2 mb-1">用户管理</h6>
+                            <small class="text-muted">账户管理</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- 热门图书 -->
+        {% if popular_books %}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-star-fill text-warning"></i> 热门图书 TOP 10
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">排名</th>
+                                    <th>书名</th>
+                                    <th>作者</th>
+                                    <th class="text-center">借阅次数</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for book in popular_books %}
+                                <tr>
+                                    <td class="text-center">
+                                        {% if forloop.counter <= 3 %}
+                                        <span class="badge bg-{% if forloop.counter == 1 %}warning{% elif forloop.counter == 2 %}secondary{% else %}info{% endif %}">
+                                            {{ forloop.counter }}
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-light text-dark">{{ forloop.counter }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ book.title }}</strong>
+                                        {% if book.available_copies == 0 %}
+                                        <span class="badge bg-danger ms-1">已借完</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-muted">{{ book.author_name|default:'-' }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary">{{ book.borrow_count }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 新书入库 -->
+        {% if new_books %}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history text-success"></i> 最新入库
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>书名</th>
+                                    <th>作者</th>
+                                    <th>入库时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for book in new_books %}
+                                <tr>
+                                    <td><strong>{{ book.title }}</strong></td>
+                                    <td class="text-muted">{{ book.author_name|default:'-' }}</td>
+                                    <td class="text-muted small">{{ book.record_time|date:"Y-m-d" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 系统公告 -->
+    {% if user.is_authenticated %}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-megaphone"></i> 图书馆公告
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="bi bi-clock text-primary"></i> 借阅规则</h6>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>图书借阅期限为30天</li>
+                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>可续借2次，每次续期30天</li>
+                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>逾期归还将收取每天0.5元滞纳金</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="bi bi-info-circle text-primary"></i> 温馨提示</h6>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-1"><i class="bi bi-exclamation text-warning me-2"></i>爱护图书，如有损坏需照价赔偿</li>
+                        <li class="mb-1"><i class="bi bi-exclamation text-warning me-2"></i>馆内请保持安静</li>
+                        <li class="mb-1"><i class="bi bi-exclamation text-warning me-2"></i>将手机调至静音模式</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

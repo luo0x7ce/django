@@ -1,0 +1,5 @@
+# 包含 templates 目录
+recursive-include mysite3/bookstore/templates *
+
+# 包含根目录下的额外文件（如配置文件）
+include *.txt

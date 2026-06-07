@@ -1,0 +1,136 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}逾期管理{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'bookstore:first_page' %}"><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item active">逾期管理</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-clock-history text-danger"></i> 逾期管理
+        </h2>
+        <p class="text-muted mb-0">管理逾期未还的图书记录</p>
+    </div>
+    <div>
+        <a href="{% url 'bookstore:statistics' %}" class="btn btn-outline-primary">
+            <i class="bi bi-bar-chart"></i> 查看统计
+        </a>
+    </div>
+</div>
+
+<!-- 逾期记录列表 -->
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <i class="bi bi-exclamation-triangle"></i> 逾期记录列表
+        <span class="badge bg-light text-danger ms-2">{{ overdue_records.paginator.count|default:0 }} 条</span>
+    </div>
+    <div class="card-body p-0">
+        {% if overdue_records %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>读者</th>
+                        <th>图书</th>
+                        <th>借书日期</th>
+                        <th>应还日期</th>
+                        <th>逾期天数</th>
+                        <th>罚款金额</th>
+                        <th>状态</th>
+                        <th style="width: 100px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in overdue_records %}
+                    <tr>
+                        <td>{{ record.id }}</td>
+                        <td>
+                            <strong>{{ record.reader.name }}</strong>
+                            <br><small class="text-muted">{{ record.reader.phone }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ record.book.title }}</strong>
+                            <br><small class="text-muted">{{ record.book.author_name|default:'-'|slice:":10" }}</small>
+                        </td>
+                        <td>{{ record.borrow_date|date:"Y-m-d" }}</td>
+                        <td class="text-danger fw-bold">{{ record.due_date|date:"Y-m-d" }}</td>
+                        <td>
+                            <span class="badge bg-danger">{{ record.days_overdue }}天</span>
+                        </td>
+                        <td>
+                            {% if record.fine_amount > 0 %}
+                                <span class="badge bg-warning text-dark">¥{{ record.fine_amount }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-danger"><i class="bi bi-clock"></i> 逾期</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'bookstore:return_book' record.id %}"
+                               class="btn btn-sm btn-success" title="处理归还">
+                                <i class="bi bi-check-circle"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        {% if overdue_records.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="分页导航">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if overdue_records.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">首页</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ overdue_records.previous_page_number }}">上一页</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in overdue_records.paginator.page_range %}
+                        {% if overdue_records.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > overdue_records.number|add:'-3' and num < overdue_records.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if overdue_records.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ overdue_records.next_page_number }}">下一页</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ overdue_records.paginator.num_pages }}">末页</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-check-circle text-success"></i>
+            <h4>暂无逾期记录</h4>
+            <p class="text-muted">所有借阅图书均正常归还</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

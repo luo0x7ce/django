@@ -1,0 +1,15 @@
+<style>
+       .active-link {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background-color: var(--blue-color);
+            padding: 2px 5px;
+            border-radius:2px;
+            margin-left: 2px;
+        }
+</style>
+<form method="get" action="/bookstore/book_search">
+    <input type="text" name="q" placeholder="输入书名、出版社或作者名" value="{{ request.GET.q|default:'' }}">
+    <button type="submit" class="active-link">搜索</button>
+</form>

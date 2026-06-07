@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: mysql1
+  name: mysql1
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql1
+  template:
+    metadata:
+      labels:
+        app: mysql1
+    spec:
+      containers:
+      - image: mysql:8.0
+        imagePullPolicy: IfNotPresent
+        name: mysql1
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+             secretKeyRef:
+                 name: mysql-secret
+                 key: root-password     
+        - name: MYSQL_DATABASE
+          valueFrom:
+             secretKeyRef:
+                name: mysql-secret
+                key: database
+
+        - name: MYSQL_USER
+          valueFrom:
+             secretKeyRef:
+                name: mysql-secret
+                key: user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+             secretKeyRef:
+                name: mysql-secret
+                key: user-password
+        ports:
+        - containerPort: 3306
+          name: mysql1
+        volumeMounts:
+        - name: mysql1-data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:                  # 动态创建 PVC
+  - metadata:
+          name: mysql1-data
+    spec:
+          accessModes: [ "ReadWriteOnce" ]
+          storageClassName: "nfs-storage"       # 根据集群修改
+          resources:
+            requests:
+             storage: 2Gi
+---
+# 3. Headless Service（为 StatefulSet 提供稳定网络标识）
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql1
+  labels:
+    app: mysql1
+spec:
+  ports:
+  - port: 3306
+    name: mysql1
+  clusterIP: None                        # Headless
+  selector:
+    app: mysql1

@@ -1,0 +1,236 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}统计报表{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'bookstore:first_page' %}"><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item active">统计报表</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-bar-chart text-primary"></i> 统计报表
+        </h2>
+        <p class="text-muted mb-0">图书馆运营数据统计</p>
+    </div>
+</div>
+
+<!-- 总体统计卡片 -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon primary">
+                <i class="bi bi-book"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_books|default:0 }}</h3>
+                <p>馆藏图书</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_readers|default:0 }}</h3>
+                <p>注册读者</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_borrowed|default:0 }}</h3>
+                <p>总借阅量</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon danger">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ overdue_count|default:0 }}</h3>
+                <p>逾期未还</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 今日统计 -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-sun"></i> 今日统计
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-success">{{ today_borrowed|default:0 }}</h3>
+                        <p class="text-muted mb-0">今日借阅</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-success">{{ today_returned|default:0 }}</h3>
+                        <p class="text-muted mb-0">今日归还</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i> 逾期提醒
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-danger">{{ overdue_count|default:0 }}</h3>
+                        <p class="text-muted mb-0">逾期书籍</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-warning">{{ total_overdue_fine|default:0 }}</h3>
+                        <p class="text-muted mb-0">待收罚款</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- 热门图书 -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-star-fill text-warning"></i> 热门图书 TOP 10
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">排名</th>
+                                <th>书名</th>
+                                <th>作者</th>
+                                <th class="text-center">借阅次数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for book in popular_books %}
+                            <tr>
+                                <td class="text-center">
+                                    {% if forloop.counter <= 3 %}
+                                    <span class="badge bg-{% if forloop.counter == 1 %}warning{% elif forloop.counter == 2 %}secondary{% else %}info{% endif %}">
+                                        {{ forloop.counter }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-light text-dark">{{ forloop.counter }}</span>
+                                    {% endif %}
+                                </td>
+                                <td><strong>{{ book.title }}</strong></td>
+                                <td class="text-muted">{{ book.author_name|default:'-' }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary">{{ book.borrow_count }}</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">暂无借阅数据</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分类统计 -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-grid"></i> 分类统计
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if category_stats %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>分类</th>
+                                <th class="text-center">图书数量</th>
+                                <th class="text-center">占比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in category_stats %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ stat.category }}</span>
+                                </td>
+                                <td class="text-center">{{ stat.count }}</td>
+                                <td class="text-center">
+                                    <div class="progress mb-0" style="height: 20px;">
+                                        <div class="progress-bar bg-primary" role="progressbar"
+                                             style="width: {% widthratio stat.count total_books 100 %}%">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-4">暂无分类数据</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 出版社统计 -->
+{% if publisher_stats %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="bi bi-building"></i> 出版社藏书统计 TOP 5
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for publisher in publisher_stats %}
+            <div class="col-md-6 mb-3">
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                    <div>
+                        <h6 class="mb-0">{{ publisher.publisher }}</h6>
+                        <small class="text-muted">{{ publisher.count }} 本书籍</small>
+                    </div>
+                    <span class="badge bg-primary fs-6">{{ publisher.count }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

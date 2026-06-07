@@ -1,0 +1,114 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}添加图书{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'bookstore:first_page' %}"><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'bookstore:index' %}">图书管理</a></li>
+        <li class="breadcrumb-item active">添加图书</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-circle"></i> 添加新图书
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'bookstore:add_book' %}">
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">书名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" required autofocus>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="isbn" class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="isbn" name="isbn" placeholder="国际标准书号">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="author" class="form-label">作者（选择）</label>
+                            <select class="form-select" id="author" name="author">
+                                <option value="">-- 选择已有作者 --</option>
+                                {% for author in authors %}
+                                <option value="{{ author.id }}">{{ author.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="author_name" class="form-label">作者名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="author_name" name="author_name" placeholder="输入作者姓名">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="publisher" class="form-label">出版社 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="publisher" name="publisher" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="category" class="form-label">分类</label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="other">其他</option>
+                                <option value="fiction">小说</option>
+                                <option value="science">科学</option>
+                                <option value="technology">技术</option>
+                                <option value="history">历史</option>
+                                <option value="art">艺术</option>
+                                <option value="education">教育</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="price" class="form-label">价格 <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">¥</span>
+                                <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="market_price" class="form-label">零售价</label>
+                            <div class="input-group">
+                                <span class="input-group-text">¥</span>
+                                <input type="number" class="form-control" id="market_price" name="market_price" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total_copies" class="form-label">库存数量 <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="total_copies" name="total_copies" value="1" min="1" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="shelf_location" class="form-label">书架位置</label>
+                            <input type="text" class="form-control" id="shelf_location" name="shelf_location" value="A-1-1" placeholder="如：A-1-1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="record" class="form-label">登记人</label>
+                            <input type="text" class="form-control" id="record" name="record" value="{{ user.username }}">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'bookstore:index' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> 返回
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> 保存
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示信息</title>
+    <!-- 引入Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- 自定义CSS -->
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa; /* 浅灰色背景 */
+        }
+        .container {
+            background-color: white; /* 容器白色背景 */
+            padding: 20px;
+            border-radius: 5px; /* 圆角边框 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* 轻微的阴影 */
+        }
+        .alert {
+            margin-top: 20px;
+            color: white; /* 文字颜色 */
+            background-color: #007bff; /* 蓝色背景 */
+            border-color: #0069d9; /* 蓝色边框 */
+        }
+        .alert-link {
+            color: white; /* 链接文字颜色 */
+        }
+        .text-limit {
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 使用Django模板标签展示错误信息 -->
+        <p class="alert alert-primary" role="alert">
+            {{ message }}
+            <a href="#" class="alert-link">更多信息</a>
+        </p>
+        <!-- 提供一个链接返回首页 -->
+        <a href="/bookstore/first_page" class="btn btn-primary text-limit">返回首页</a>
+    </div>
+
+    <!-- 可选：引入Bootstrap JS -->
+    <!-- 如果你的页面有Bootstrap组件需要JavaScript支持，比如模态框、工具提示等，才需要引入Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
+</body>
+</html>

@@ -1,0 +1,5 @@
+Metadata-Version: 2.1
+Name: mysite3
+Version: 0.1
+Requires-Dist: django>=3.0
+Requires-Dist: requests>=2.24.0

@@ -1,0 +1,205 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}图书管理{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'bookstore:first_page' %}"><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item active">图书管理</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-book text-primary"></i> 图书管理
+        </h2>
+        <p class="text-muted mb-0">管理图书馆馆藏，添加、编辑或删除图书</p>
+    </div>
+    <div>
+        {% if user.is_superuser %}
+        <a href="{% url 'bookstore:add_book' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> 添加新书
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 搜索和筛选 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{% url 'bookstore:index' %}" class="row g-3">
+            <div class="col-md-4">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" name="q" value="{{ query }}"
+                           placeholder="搜索书名、作者、ISBN...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="category">
+                    <option value="">全部分类</option>
+                    {% for value, label in categories %}
+                    <option value="{{ value }}" {% if category == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> 搜索
+                </button>
+                <a href="{% url 'bookstore:index' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 图书列表 -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            <i class="bi bi-list-ul"></i> 图书列表
+            <span class="badge bg-primary ms-2">{{ books.paginator.count|default:0 }} 本</span>
+        </span>
+        {% if user.is_superuser and books %}
+        <button type="button" class="btn btn-sm btn-danger" onclick="submitBatchDelete()">
+            <i class="bi bi-trash"></i> 批量删除
+        </button>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        {% if books %}
+        <form id="batchDeleteForm" method="post" action="{% url 'bookstore:batch_delete' %}">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            {% if user.is_superuser %}
+                            <th style="width: 40px;">
+                                <input type="checkbox" id="select-all" class="form-check-input">
+                            </th>
+                            {% endif %}
+                            <th>ID</th>
+                            <th>书名</th>
+                            <th>作者</th>
+                            <th>分类</th>
+                            <th>出版社</th>
+                            <th>价格</th>
+                            <th>可借/总库存</th>
+                            <th>位置</th>
+                            <th style="width: 100px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr>
+                            {% if user.is_superuser %}
+                            <td>
+                                <input type="checkbox" class="item-checkbox form-check-input"
+                                       name="selected_books" value="{{ book.id }}">
+                            </td>
+                            {% endif %}
+                            <td>{{ book.id }}</td>
+                            <td>
+                                <strong>{{ book.title }}</strong>
+                                {% if not book.is_active %}
+                                <span class="badge bg-secondary ms-1">已下架</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ book.author_name|default:'-' }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ book.get_category_display }}</span>
+                            </td>
+                            <td class="text-muted">{{ book.publisher|default:'-' }}</td>
+                            <td>¥{{ book.price }}</td>
+                            <td>
+                                {% if book.available_copies > 0 %}
+                                    <span class="badge bg-success">{{ book.available_copies }}</span>
+                                    <span class="text-muted">/{{ book.total_copies }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">已借完</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">{{ book.shelf_location }}</td>
+                            <td>
+                                {% if user.is_superuser %}
+                                <a href="{% url 'bookstore:update_book' book.id %}"
+                                   class="btn btn-sm btn-outline-primary" title="编辑">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="javascript:void(0)"
+                                   onclick="confirmDelete('{% url 'bookstore:delete_book' book.id %}', '确定要删除《{{ book.title }}》吗？')"
+                                   class="btn btn-sm btn-outline-danger" title="删除">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">查看详情</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-book"></i>
+            <h4>暂无图书数据</h4>
+            <p class="text-muted">
+                {% if query %}
+                    没有找到匹配"{{ query }}"的图书
+                {% else %}
+                    点击"添加新书"开始录入图书
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 分页 -->
+    {% if books.has_other_pages %}
+    <div class="card-footer">
+        <nav aria-label="分页导航">
+            <ul class="pagination justify-content-center mb-0">
+                {% if books.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&q={{ query }}&category={{ category }}">首页</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.previous_page_number }}&q={{ query }}&category={{ category }}">上一页</a>
+                </li>
+                {% endif %}
+
+                {% for num in books.paginator.page_range %}
+                    {% if books.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > books.number|add:'-3' and num < books.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}&q={{ query }}&category={{ category }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if books.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.next_page_number }}&q={{ query }}&category={{ category }}">下一页</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ books.paginator.num_pages }}&q={{ query }}&category={{ category }}">末页</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <div class="text-center text-muted mt-2">
+            第 {{ books.number }} / {{ books.paginator.num_pages }} 页，共 {{ books.paginator.count }} 本书
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

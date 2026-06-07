@@ -1,0 +1,150 @@
+<!-- admin_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员详细信息</title>
+    <style>
+        /* 定义CSS变量 */
+        :root {
+            --blue-color: #007bff; /* 主题蓝色 */
+            --dark-blue-color: #0056b3; /* 深色蓝色 */
+            --light-gray-color: #f4f4f4; /* 浅灰色 */
+            --table-header-bg: #e8f4ff; /* 表格头部背景色 */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray-color);
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--blue-color);
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--blue-color);
+        }
+
+        td:last-child {
+            text-align: center;
+        }
+
+        td a {
+            text-decoration: none;
+            color: var(--blue-color);
+            margin-right: 10px;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .text-limit {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .active {
+            display: inline-block;
+            text-decoration: none;
+            color: #fff;
+            background-color: var(--blue-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .active:hover {
+            background-color: var(--dark-blue-color);
+        }
+
+        .no-records {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        /* 底部样式 */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>用户管理</h2>
+
+        <!-- 首页链接 -->
+        <a href="/bookstore/first_page" class="active">首页</a>
+
+        <!-- 用户列表 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>年龄</th>
+                    <th>身份证号</th>
+                    <th>联系方式</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in custom %}
+                <tr>
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.age }}</td>
+                    <td>{{ customer.identity_info }}</td>
+                    <td>{{ customer.contact_info }}</td>
+                    <td>
+                        <a href="/bookstore/user_update/{{ customer.id }}" class="text-limit">编辑</a>
+                        <a href="/bookstore/user_delete?user_id={{ customer.id }}" class="text-limit">删除</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="no-records">No users available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <!-- 页脚内容，比如版权信息等 -->
+    </div>
+</body>
+</html>

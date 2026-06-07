@@ -1,0 +1,90 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}注册{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <i class="bi bi-book"></i>
+            <h2>智慧图书馆管理系统</h2>
+            <p class="text-white opacity-75">创建新账号，开始阅读之旅</p>
+        </div>
+        <div class="auth-body">
+            <form method="post" action="{% url 'bookstore:register' %}">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-person me-1"></i>用户名
+                    </label>
+                    <input type="text" class="form-control" id="username" name="username"
+                           placeholder="请输入用户名" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        <i class="bi bi-envelope me-1"></i>电子邮箱
+                    </label>
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="请输入邮箱" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-lock me-1"></i>密码
+                    </label>
+                    <input type="password" class="form-control" id="password" name="password"
+                           placeholder="请输入密码" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password2" class="form-label">
+                        <i class="bi bi-lock-fill me-1"></i>确认密码
+                    </label>
+                    <input type="password" class="form-control" id="password2" name="password2"
+                           placeholder="请再次输入密码" required>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">
+                        <i class="bi bi-person-badge me-1"></i>姓名
+                    </label>
+                    <input type="text" class="form-control" id="name" name="name"
+                           placeholder="请输入真实姓名">
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">
+                        <i class="bi bi-phone me-1"></i>手机号
+                    </label>
+                    <input type="text" class="form-control" id="phone" name="phone"
+                           placeholder="请输入手机号码">
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_card" class="form-label">
+                        <i class="bi bi-credit-card me-1"></i>身份证号
+                    </label>
+                    <input type="text" class="form-control" id="id_card" name="id_card"
+                           placeholder="请输入身份证号码">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">
+                    <i class="bi bi-person-plus"></i> 注册
+                </button>
+
+                <div class="text-center">
+                    <span class="text-muted">已有账号？</span>
+                    <a href="{% url 'bookstore:login' %}" class="text-primary text-decoration-none">
+                        立即登录
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

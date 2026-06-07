@@ -1,0 +1,152 @@
+{% extends 'bookstore/base.html' %}
+{% load static %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'bookstore:first_page' %}"><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item active">用户管理</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-person-badge text-primary"></i> 用户管理
+        </h2>
+        <p class="text-muted mb-0">管理系统用户账户</p>
+    </div>
+</div>
+
+<!-- 用户列表 -->
+<div class="card">
+    <div class="card-header">
+        <span>
+            <i class="bi bi-people"></i> 用户列表
+            <span class="badge bg-primary ms-2">{{ users.paginator.count|default:0 }} 人</span>
+        </span>
+    </div>
+    <div class="card-body p-0">
+        {% if users %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>注册时间</th>
+                        <th>最后登录</th>
+                        <th>状态</th>
+                        <th>权限</th>
+                        <th style="width: 100px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>
+                            <strong>{{ user.username }}</strong>
+                        </td>
+                        <td class="text-muted">{{ user.email|default:'-' }}</td>
+                        <td>
+                            <small>{{ user.date_joined|date:"Y-m-d" }}</small>
+                            <br><small class="text-muted">{{ user.date_joined|date:"H:i" }}</small>
+                        </td>
+                        <td>
+                            {% if user.last_login %}
+                                <small>{{ user.last_login|date:"Y-m-d" }}</small>
+                                <br><small class="text-muted">{{ user.last_login|date:"H:i" }}</small>
+                            {% else %}
+                                <span class="text-muted">从未登录</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> 正常</span>
+                            {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-x-circle"></i> 禁用</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_superuser %}
+                                <span class="badge bg-danger"><i class="bi bi-shield-check"></i> 管理员</span>
+                            {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-person"></i> 普通用户</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'bookstore:update_admin1_view' user.id %}"
+                               class="btn btn-sm btn-outline-primary" title="编辑">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% if not user.is_superuser %}
+                            <a href="javascript:void(0)"
+                               onclick="if(confirm('确定要删除用户 {{ user.username }} 吗？')) { document.getElementById('deleteForm{{ user.id }}').submit(); }"
+                               class="btn btn-sm btn-outline-danger" title="删除">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            <form id="deleteForm{{ user.id }}" method="post" action="{% url 'bookstore:user_delete' %}" style="display: none;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        {% if users.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="分页导航">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if users.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1&q={{ query }}">首页</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ users.previous_page_number }}&q={{ query }}">上一页</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in users.paginator.page_range %}
+                        {% if users.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > users.number|add:'-3' and num < users.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}&q={{ query }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if users.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ users.next_page_number }}&q={{ query }}">下一页</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ users.paginator.num_pages }}&q={{ query }}">末页</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="text-center text-muted mt-2">
+                第 {{ users.number }} / {{ users.paginator.num_pages }} 页，共 {{ users.paginator.count }} 个用户
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <h4>暂无用户数据</h4>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

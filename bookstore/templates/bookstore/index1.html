@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>书籍列表</title>
+      <style>
+         body {
+         font-family: Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background: #f4f4f4;
+         }
+         h1 {
+         text-align: center;
+         margin-top: 20px;
+         }
+         table {
+         width: 80%;
+         margin: 0 auto;
+         border-collapse: collapse;
+         background: #fff;
+         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+         }
+         th, td {
+         border: 1px solid #ddd;
+         padding: 10px;
+         text-align: left;
+         }
+         th {
+         background-color: #f7f7f7;
+         }
+         td a {
+         margin-right: 10px;
+         text-decoration: none;
+         color: #007bff;
+         }
+         td a:hover {
+         text-decoration: underline;
+         }
+         /* 操作按钮样式 */
+         .op-button {
+         cursor: pointer;
+         color: #fff;
+         background-color: #dc3545;
+         border: none;
+         padding: 5px 10px;
+         border-radius: 5px;
+         }
+         .op-button:hover {
+         background-color: #c82333;
+         }
+         /* 空数据提示样式 */
+         .no-books {
+         color: #666;
+         text-align: center;
+         font-style: italic;
+         }
+         .text-limit {
+         display: -webkit-box;
+         -webkit-line-clamp: 5; /* Number of lines */
+         -webkit-box-orient: vertical;
+         overflow: hidden;
+         text-overflow: ellipsis;
+         line-height: 1.5em; /* This should match your line-height */
+         max-height: 20.5em; /* 20 lines at 1.5em each */
+         }
+         .button-container {
+         position: relative;
+         }
+         .my-button {
+         position: absolute;
+         top: -25px;  /* 距离顶部20像素 */
+         left: -25px; /* 距离左侧50像素 */
+         }
+         .custom-link {
+         position: absolute;
+         top: 50px;
+         left: 180px;
+         }
+         .custom-link1 {
+         position: absolute;
+         top: 50px;
+         left: 270px;
+         }
+
+         .button-container1 {
+         position: relative;
+         }
+         .my-button {
+         position: absolute;
+         top: -25px;  /* 距离顶部20像素 */
+         left: -25px; /* 距离左侧50像素 */
+         }
+      </style>
+   </head>
+   <body>
+      <h1>入库管理</h1>
+      <form id="bookForm">
+         <table>
+            <thead>
+               <tr>
+                  <th>全选<input type="checkbox" id="select-all"></th>
+                  <th>ID</th>
+                  <th>书名</th>
+                  <th>出版社</th>
+                  <th>价格</th>
+                  <th>市场价格</th>
+                  <th>操作人</th>
+                  <th>图书数量</th>
+                  <th>图书作者</th>
+                  <th>操作时间</th>
+                  <th>操作最新时间</th>
+                  <th>操作</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for book in index %}
+               <tr>
+                  <td><input type="checkbox" class="book-checkbox" name="selected_books" value="{{ book.id }}" data-id="{{ book.id }}"></td>
+                  <td>{{ book.id }}</td>
+                  <td>{{ book.title }}</td>
+                  <td>{{ book.pub }}</td>
+                  <td>{{ book.price }}</td>
+                  <td>{{ book.market_price }}</td>
+                  <td>{{ book.record }}</td>
+                  <td>{{ book.shu_nub }}</td>
+                  <td>{{ book.author11_name }}</td>
+                   <td>{{ book.record_time }}</td>
+                  <td>{{ book.updated_time }}</td>
+                  <td>
+                     <a href="/bookstore/update_book/{{ book.id }}" class="text-limit">编辑</a>
+                     <a href="/bookstore/delete_book?book_id={{ book.id }}" class="text-limit">删除</a>
+
+                  </td>
+               </tr>
+               {% empty %}
+               <tr>
+                  <td colspan="6" class="no-books">No books available.</td>
+               </tr>
+               {% endfor %}
+                <button type="submit" formaction="/bookstore/add_book" class="custom-link">登记书籍</button>
+            </tbody>
+         </table>
+       <button type="submit" formaction="/bookstore/batch_delete" class="custom-link1">批量删除</button>
+
+      </form>
+<script>
+    // 等待 DOM 完全加载
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取全选复选框
+        var selectAllCheckbox = document.getElementById('select-all');
+
+        // 为全选复选框添加点击事件监听器
+        selectAllCheckbox.addEventListener('change', function(event) {
+            // 获取所有书籍复选框
+            var bookCheckboxes = document.querySelectorAll('.book-checkbox');
+            // 更新所有书籍复选框的选中状态与全选复选框相同
+            for (var i = 0; i < bookCheckboxes.length; i++) {
+                bookCheckboxes[i].checked = event.target.checked;
+            }
+        });
+    });
+</script>
+   </body>
+</html>

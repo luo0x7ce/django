@@ -1,0 +1,16 @@
+<style>
+       .active-link {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background-color: var(--blue-color);
+            padding: 2px 5px;
+            border-radius:2px;
+            margin-left: 2px;
+        }
+</style>
+
+<form method="get" action="/bookstore/index">
+    <input type="text" name="q" placeholder="出版社、书名、记录者、书架" value="{{ request.GET.q|default:'' }}">
+    <button type="submit" class="active-link">搜索</button>
+</form>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试静态文件</title>
+</head>
+<body>
+<img src="/static/image/django.jpg" width="200px" height="200px">
+{% load static %}
+<img src="{% static 'image/django.jpg' %}" width="400px" height="400px">
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新用户信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            margin: auto;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff; /* 蓝色基调 */
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px; /* 与上一个输入框间隔 */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* 悬停效果 */
+        }
+        .disabled-input {
+            opacity: 0.5;
+            background-color: #eee;
+        }
+        .required {
+            color: red;
+            margin-left: 5px;
+        }
+        /* 其他样式保持不变 */
+    </style>
+</head>
+<body>
+    <form action="/bookstore/user_update/{{ user_id }}" method="post">
+        <fieldset>
+            <legend>更新用户信息</legend>
+
+            <p>
+                <label for="name">姓名:</label>
+                <input type="text" id="name" name = "name"  value="{{ cusstom.name }}">
+            </p>
+            <p>
+                <label for="age">年纪:</label>
+                <input type="text" id="age" name = "age"  value="{{ cusstom.age }}">
+            </p>
+              <p>
+                <label for="identity_info">身份类型:</label>
+                <input type="text" id="identity_info"  name = "identity_info"  value="{{ cusstom.identity_info }}">
+            </p>
+           <!--    <p>
+                <span class="required">*</span>
+                <label for="iden">身份证号:</label>
+                <input type="text" name="iden" id="iden" value="{{ cusstom.iden }}" required>
+            </p>
+         <p>
+                <span class="required">*</span>
+                <label for="reader_type">读者类型:</label>
+                <input type="text" name="reader_type" id="reader_type" value="{{ cusstom.reader_type }}" required>
+            </p>
+            <p>
+                <span class="required">*</span>
+                <label for="jie_num">借阅数量:</label>
+                <input type="text" name="jie_num" id="jie_num" class="disabled-input" value="{{ cusstom.jie_num }}" required>
+            </p> -->
+                 <p>
+                <span class="required">*</span>
+                <label for="contact_info">联系方式:</label>
+                <input type="text" name="contact_info" id="contact_info" value="{{ cusstom.contact_info }}" required>
+            </p>
+            <p>
+                <input type="submit" value="更新">
+            </p>
+        </fieldset>
+    </form>
+</body>
+</html>
