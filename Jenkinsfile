@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // ==================== 镜像仓库配置 ====================
-        HARBOR_URL = 'https://core.harbor.doman'
+        HARBOR_URL = 'core.harbor.doman'
         HARBOR_PROJECT = 'library'
         IMAGE_NAME = 'django-server'
         IMAGE_TAG = "${BRANCH_NAME}-${BUILD_NUMBER}-${GIT_COMMIT.take(8)}"
