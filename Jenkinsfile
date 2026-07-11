@@ -65,6 +65,9 @@ pipeline {
 					    export KUBECONFIG="${KUBECONFIG_FILE}"
                         # 替换镜像tag到部署文件，或者直接用yaml中的latest
                         kubectl apply -f k8sconfig/
+                       kubectl set image deployment/django-server \
+                    django=${IMAGE_FULL_NAME} \
+                    -n default
                     """
                 }
             }
