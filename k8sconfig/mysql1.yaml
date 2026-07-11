@@ -52,7 +52,7 @@ spec:
           name: mysql1-data
     spec:
           accessModes: [ "ReadWriteOnce" ]
-          storageClassName: "nfs-storage"       # 根据集群修改
+          storageClassName: "nfs-client"       # 根据集群修改
           resources:
             requests:
              storage: 2Gi

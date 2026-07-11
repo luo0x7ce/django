@@ -13,7 +13,7 @@ pipeline {
         K8S_NAMESPACE = 'default'
         K8S_DEPLOYMENT_NAME = 'django-server'
         K8S_CONTAINER_NAME = 'django'
-        KUBECONFIG_CREDENTIALS = 'k8s'
+        KUBECONFIG_CREDENTIALS = 'KUBECONFIG_CREDENTIALS'
         DOCKER_BUILDKIT = '1'
     }
     
@@ -60,7 +60,7 @@ pipeline {
                 anyOf { branch 'djangomain'; branch 'django_1'; }
             }
             steps {
-               withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS}", variable: 'KUBECONFIG')]) {
+               withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS}", variable: 'KUBECONFIG_FILE')]) {
                     sh """
 					    export KUBECONFIG="${KUBECONFIG}"
                         kubectl set image deployment/${K8S_DEPLOYMENT_NAME} \

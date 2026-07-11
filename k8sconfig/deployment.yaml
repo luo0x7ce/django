@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: core.harbor.domain/library/django:v2
+        image: core.harbor.domain/library/django:latest
         command: ["/entrypoint.sh"]
         args: ["python", "manage.py", "runserver", "0.0.0.0:8881"]
         env:
@@ -36,7 +36,7 @@ spec:
               name: mysql-secret
               key: user-password
         - name: DB_HOST
-          value: "mysql1.default.svc.cluster.local"          # 根据实际情况调整
+          value: "mysql1.default.svc.luowei.com"          # 根据实际情况调整
         - name: PORT
           value: "3306"
         - name: ALLOWED_HOSTS
