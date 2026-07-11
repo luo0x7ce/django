@@ -7,7 +7,7 @@ kind: Pod
 spec:
   containers:
   - name: jnlp
-    image: core.harbor.domain/library/inbound-agent:v1
+    image: jenkins/inbound-agent:3383.vc8881d4b_0e76-1
     args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
     resources:
       requests:
@@ -30,7 +30,7 @@ spec:
         memory: "256Mi"
         cpu: "200m"
   - name: kubectl
-    image: core.harbor.domain/library/kubectl:v1
+    image: bitnami/kubectl:latest
     command: ['sleep', 'infinity']
     resources:
       requests:
@@ -107,7 +107,7 @@ spec:
 
         stage('Deploy to Kubernetes') {
             when {
-                anyOf { branch 'djangomain'; branch 'django_1'; branch 'django_jenkins_pod'; }
+                anyOf { branch 'djangomain'; branch 'django_1'; }
             }
             steps {
                 withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG_FILE')]) {
