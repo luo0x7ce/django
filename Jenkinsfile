@@ -7,7 +7,7 @@ kind: Pod
 spec:
   containers:
   - name: jnlp
-    image: jenkins/inbound-agent:3383.vc8881d4b_0e76-1
+    image: core.harbor.domain/library/inbound-agent:v1
     args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
     resources:
       requests:
@@ -30,7 +30,7 @@ spec:
         memory: "256Mi"
         cpu: "200m"
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: core.harbor.domain/library/kubectl:v1
     command: ['sleep', 'infinity']
     resources:
       requests:
