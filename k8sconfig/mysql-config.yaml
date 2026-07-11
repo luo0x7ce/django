@@ -11,4 +11,4 @@ data:
     init_connect='SET NAMES utf8mb4'
     
     [client]
-    default-character-set=utf8mb4apiVersion: v1
+    default-character-set=utf8mb4
