@@ -17,7 +17,7 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   - name: docker
-    image: docker:latest
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/ghcr.io/phioranex/openclaw-docker:latest
     command: ['sleep', 'infinity']
     volumeMounts:
     - name: docker-sock
