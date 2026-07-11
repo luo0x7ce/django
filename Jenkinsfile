@@ -63,13 +63,8 @@ pipeline {
                withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS}", variable: 'KUBECONFIG_FILE')]) {
                     sh """
 					    export KUBECONFIG="${KUBECONFIG_FILE}"
-                        kubectl set image deployment/${K8S_DEPLOYMENT_NAME} \
-                            ${K8S_CONTAINER_NAME}=${IMAGE_FULL_NAME} \
-                            -n ${K8S_NAMESPACE}
-                        
-                        kubectl rollout status deployment/${K8S_DEPLOYMENT_NAME} \
-                            -n ${K8S_NAMESPACE} \
-                            --timeout=5m
+                        # 替换镜像tag到部署文件，或者直接用yaml中的latest
+                        kubectl apply -f k8sconfig/
                     """
                 }
             }
