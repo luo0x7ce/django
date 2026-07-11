@@ -62,7 +62,7 @@ pipeline {
             steps {
                withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS}", variable: 'KUBECONFIG_FILE')]) {
                     sh """
-					    export KUBECONFIG="${KUBECONFIG}"
+					    export KUBECONFIG="${KUBECONFIG_FILE}"
                         kubectl set image deployment/${K8S_DEPLOYMENT_NAME} \
                             ${K8S_CONTAINER_NAME}=${IMAGE_FULL_NAME} \
                             -n ${K8S_NAMESPACE}
