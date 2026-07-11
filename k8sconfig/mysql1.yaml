@@ -47,6 +47,12 @@ spec:
         volumeMounts:
         - name: mysql1-data
           mountPath: /var/lib/mysql
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d/my.cnf 
+     volumes:
+     - name: mysql-config
+       configMap:
+          name: mysql-config
   volumeClaimTemplates:                  # 动态创建 PVC
   - metadata:
           name: mysql1-data

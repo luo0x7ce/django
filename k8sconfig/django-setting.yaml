@@ -46,4 +46,4 @@ data:
     = 'django.db.models.BigAutoField'\r\n"
 kind: ConfigMap
 metadata:
-  name: django-settings
+  name: django-config

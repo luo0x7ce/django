@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  my.cnf: "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: mysql-config\n  namespace:
+    default\ndata:\n  my.cnf: |\n    [mysqld]\n    character-set-server=utf8mb4\n
+    \   collation-server=utf8mb4_unicode_ci\n    init_connect='SET NAMES utf8mb4'\n
+    \   \n    [client]\n    default-character-set=utf8mb4apiVersion: v1\nkind: ConfigMap\nmetadata:\n
+    \ name: mysql-config\n  namespace: default\ndata:\n  my.cnf: |\n    [mysqld]\n
+    \   character-set-server=utf8mb4\n    collation-server=utf8mb4_unicode_ci\n    init_connect='SET
+    NAMES utf8mb4'\n    \n    [client]\n    default-character-set=utf8mb4\n"
+kind: ConfigMap
+metadata:
+  name: mysql-config
