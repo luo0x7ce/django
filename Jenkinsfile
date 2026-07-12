@@ -6,6 +6,9 @@ apiVersion: v1
 kind: Pod
 spec:
   volumes:
+  - name: harbor-ca-volume
+    configMap:
+       name: harbor-ca
   - name: workspace-volume
     emptyDir: {}
   - name: docker-config
@@ -27,6 +30,14 @@ spec:
       mountPath: /home/jenkins/agent
     - name: docker-config
       mountPath: /kaniko/.docker
+    - name: harbor-ca-volume
+      mountPath: /etc/ssl/certs/harbor-ca.crt
+      subPath: ca.crt
+    - name: harbor-ca-volume
+      mountPath: /kaniko/.docker/certs.d/core.harbor.domain/ca.crt
+      subPath: ca.crt
+    # 可选：添加只读挂载权限，避免证书被意外修改
+      readOnly: true
   - name: kubectl
     image: bitnami/kubectl:latest
     command: ['sleep', 'infinity']
