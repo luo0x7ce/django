@@ -20,8 +20,7 @@ spec:
       mountPath: /home/jenkins/agent
   - name: kaniko
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/gcr.io/kaniko-project/executor:latest
-    command:
-    - /busybox/cat
+    command: ['sleep', 'infinity'] 
     tty: true
     volumeMounts:
     - name: workspace-volume
