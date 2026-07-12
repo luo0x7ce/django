@@ -90,7 +90,7 @@ spec:
         stage('Build & Push with Kaniko') {
             steps {
                 container('kaniko') {
-                    sh """
+                    /bin/sh """
                         /kaniko/executor \
                           --context dir:///home/jenkins/agent \
                           --dockerfile /home/jenkins/agent/Dockerfile \
