@@ -17,11 +17,15 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   - name: docker
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/tsaridas/stremio-docker:latest
-    command: ['sleep', 'infinity']
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/docker:dind
+    securityContext:
+      privileged: true
+    command: ["dockerd", "--host=unix:///var/run/docker.sock", "--host=tcp://127.0.0.1:2375", "--storage-driver=overlay2"]
     volumeMounts:
     - name: docker-sock
       mountPath: /var/run/docker.sock
+    - name: docker-graph-storage
+      mountPath: /var/lib/docker
     resources:
       requests:
         memory: "128Mi"
@@ -43,6 +47,8 @@ spec:
   - name: docker-sock
     hostPath:
       path: /var/run/docker.sock
+  - name: docker-graph-storage
+    emptyDir: {}
 """
         }
     }
