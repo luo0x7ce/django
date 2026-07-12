@@ -14,6 +14,15 @@ spec:
   - name: docker-config
     secret:
       secretName: regcred  # 你需要预先创建一个包含 harbor 认证的 secret
+  initContainers:
+  - name: init-certs
+    image: busybox:latest
+    command: ['sh', '-c', 'mkdir -p /kaniko/.docker/certs.d/core.harbor.domain && mkdir -p /etc/ssl/certs  && cp /source/ca.crt /etc/ssl/certs && cp /source/ca.crt /kaniko/.docker/certs.d/core.harbor.domain/ca.crt']
+    volumeMounts:
+    - name: harbor-ca-volume
+      mountPath: /source
+    - name: certs-dir
+      mountPath: /certs
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:3383.vc8881d4b_0e76-1
