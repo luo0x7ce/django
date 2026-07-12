@@ -77,7 +77,7 @@ spec:
 
         stage('Deploy to Kubernetes') {
             when {
-                anyOf { branch 'djangomain'; branch 'django_1'; }
+                anyOf { branch 'djangomain'; branch 'django_1'; branch 'django_jenkins_pod'; }
             }
             steps {
                 withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG_FILE')]) {
