@@ -90,7 +90,9 @@ spec:
         stage('Build & Push with Kaniko') {
             steps {
                 container('kaniko') {
-                    /bin/sh """
+            // 第一步：先验证容器内的 shell 是否活着
+            sh 'echo "=== Kaniko shell is alive ===" && /bin/sh --version 2>/dev/null || echo "sh version failed"'
+                    sh """
                         /kaniko/executor \
                           --context dir:///home/jenkins/agent \
                           --dockerfile /home/jenkins/agent/Dockerfile \
