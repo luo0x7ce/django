@@ -40,7 +40,7 @@ spec:
   - name: kaniko
     image: core.harbor.domain/library/executor:v1
     # 确保使用包含 shell 的镜像，如 debug 版，或者确认 executor:v1 支持 sleep
-    command: ['/busybox/sleep', 'infinity'] 
+    command: ['/bin/sleep', 'infinity'] 
     tty: true
     volumeMounts:
     - name: workspace-volume
