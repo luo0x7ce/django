@@ -2,7 +2,6 @@ pipeline {
     agent {
         kubernetes {
             yaml """
-    yaml """
 apiVersion: v1
 kind: Pod
 spec:
@@ -63,7 +62,6 @@ spec:
     volumeMounts:
     - name: workspace-volume
       mountPath: /home/jenkins/agent
-"""
 """
         }
     }
