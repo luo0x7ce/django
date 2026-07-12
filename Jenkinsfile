@@ -19,7 +19,7 @@ spec:
     - name: workspace-volume
       mountPath: /home/jenkins/agent
   - name: kaniko
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/gcr.io/kaniko-project/executor:latest
+    image: core.harbor.domain/library/executor:v1
     command: ['sleep', 'infinity'] 
     tty: true
     volumeMounts:
