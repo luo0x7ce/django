@@ -38,7 +38,7 @@ spec:
       mountPath: /home/jenkins/agent
 
   - name: kaniko
-    image: core.harbor.domain/library/executor:v1
+    image: core.harbor.domain/library/executor:v4
     # 确保使用包含 shell 的镜像，如 debug 版，或者确认 executor:v1 支持 sleep
     command: ['/bin/sleep', 'infinity'] 
     tty: true
