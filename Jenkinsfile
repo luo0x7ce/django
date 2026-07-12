@@ -2,25 +2,34 @@ pipeline {
     agent {
         kubernetes {
             yaml """
+    yaml """
 apiVersion: v1
 kind: Pod
 spec:
   volumes:
   - name: harbor-ca-volume
     configMap:
-       name: harbor-ca
+      name: harbor-ca
   - name: workspace-volume
     emptyDir: {}
   - name: docker-config
     secret:
-      secretName: regcred  # 你需要预先创建一个包含 harbor 认证的 secret
+      secretName: regcred
+  # 【新增】用于在 Init Container 和 Kaniko 之间共享证书的临时卷
+  - name: kaniko-certs
+    emptyDir: {}
+
   initContainers:
   - name: init-certs
     image: busybox:latest
-    command: ['sh', '-c', 'mkdir -p /kaniko/.docker/certs.d/core.harbor.domain && mkdir -p /etc/ssl/certs  && cp /source/ca.crt /etc/ssl/certs && cp /source/ca.crt /kaniko/.docker/certs.d/core.harbor.domain/ca.crt']
+    command: ['sh', '-c', 'mkdir -p /certs/core.harbor.domain && cp /source/ca.crt /certs/core.harbor.domain/ca.crt']
     volumeMounts:
     - name: harbor-ca-volume
       mountPath: /source
+      readOnly: true
+    - name: kaniko-certs
+      mountPath: /certs
+
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:3383.vc8881d4b_0e76-1
@@ -28,29 +37,33 @@ spec:
     volumeMounts:
     - name: workspace-volume
       mountPath: /home/jenkins/agent
+
   - name: kaniko
     image: core.harbor.domain/library/executor:v1
-    command: ['sleep', 'infinity'] 
+    # 确保使用包含 shell 的镜像，如 debug 版，或者确认 executor:v1 支持 sleep
+    command: ['/busybox/sleep', 'infinity'] 
     tty: true
     volumeMounts:
     - name: workspace-volume
       mountPath: /home/jenkins/agent
     - name: docker-config
       mountPath: /kaniko/.docker
-    - name: harbor-ca-volume
-      mountPath: /etc/ssl/certs/harbor-ca.crt
-      subPath: ca.crt
-    - name: harbor-ca-volume
-      mountPath: /kaniko/.docker/certs.d/core.harbor.domain/ca.crt
-      subPath: ca.crt
-    # 可选：添加只读挂载权限，避免证书被意外修改
+    # 【关键修改】挂载共享的证书卷到 Kaniko 的证书目录
+    - name: kaniko-certs
+      mountPath: /kaniko/.docker/certs.d/core.harbor.domain
       readOnly: true
+    # 如果需要系统级信任，也可以挂载到 /etc/ssl/certs，但通常 Kaniko 优先读取 .docker/certs.d
+    # - name: kaniko-certs
+    #   mountPath: /etc/ssl/certs/harbor-ca.crt
+    #   subPath: ca.crt
+
   - name: kubectl
     image: bitnami/kubectl:latest
     command: ['sleep', 'infinity']
     volumeMounts:
     - name: workspace-volume
       mountPath: /home/jenkins/agent
+"""
 """
         }
     }
