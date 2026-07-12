@@ -21,8 +21,6 @@ spec:
     volumeMounts:
     - name: harbor-ca-volume
       mountPath: /source
-    - name: certs-dir
-      mountPath: /certs
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:3383.vc8881d4b_0e76-1
